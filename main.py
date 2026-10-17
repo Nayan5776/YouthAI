@@ -1,6 +1,14 @@
 import sys
 from youthai.tracker import YouthAITracker
 
+def get_valid_int(prompt: str) -> int:
+    
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print("Invalid input! Please enter a valid number.")
+
 def display_menu():
     print("\n" + "=" * 40)
     print("      YOUTH AI - VERSION 0.1")
@@ -28,10 +36,10 @@ def main():
                 print(f"Career Goal: {tracker.profile.career_goal}")
             else:
                 print("No profile found. Let's create one!")
-                name = input("Enter your name: ")
-                age = int(input("Enter your age: "))
-                major = input("Enter your Major or Grade: ")
-                goal = input("Enter your main career goal: ")
+                name = input("Enter your name: ").strip()
+                age = get_valid_int("Enter your age: ")
+                major = input("Enter your Major or Grade: ").strip()
+                goal = input("Enter your main career goal: ").strip()
                 tracker.set_profile(name, age, major, goal)
                 print("Profile saved successfully!")
 
@@ -40,6 +48,7 @@ def main():
             print("1. View Goals")
             print("2. Add Goal")
             print("3. Complete Goal")
+            print("4. Delete Goal")
             sub_choice = input("Choose an option: ").strip()
 
             if sub_choice == "1":
@@ -49,13 +58,28 @@ def main():
                     status = "✓" if g.is_completed else "✗"
                     print(f"{idx}. [{status}] {g.title}")
             elif sub_choice == "2":
-                title = input("Enter goal title: ")
-                tracker.add_goal(title)
-                print("Goal added!")
+                title = input("Enter goal title: ").strip()
+                if title:
+                    tracker.add_goal(title)
+                    print("Goal added!")
+                else:
+                    print("Goal title cannot be empty.")
             elif sub_choice == "3":
-                idx = int(input("Enter goal number to complete: ")) - 1
+                if not tracker.goals:
+                    print("No goals to complete.")
+                    continue
+                idx = get_valid_int("Enter goal number to complete: ") - 1
                 if tracker.complete_goal(idx):
                     print("Goal marked as completed!")
+                else:
+                    print("Invalid goal number.")
+            elif sub_choice == "4":
+                if not tracker.goals:
+                    print("No goals to delete.")
+                    continue
+                idx = get_valid_int("Enter goal number to delete: ") - 1
+                if tracker.delete_goal(idx):
+                    print("Goal deleted!")
                 else:
                     print("Invalid goal number.")
 
@@ -64,6 +88,7 @@ def main():
             print("1. View Tasks")
             print("2. Add Task")
             print("3. Complete Task")
+            print("4. Delete Task")
             sub_choice = input("Choose an option: ").strip()
 
             if sub_choice == "1":
@@ -73,14 +98,29 @@ def main():
                     status = "✓" if t.is_completed else "✗"
                     print(f"{idx}. [{status}] ({t.priority}) {t.title}")
             elif sub_choice == "2":
-                title = input("Enter task description: ")
-                priority = input("Priority (High/Medium/Low) [Medium]: ").capitalize() or "Medium"
-                tracker.add_task(title, priority)
-                print("Task added!")
+                title = input("Enter task description: ").strip()
+                if title:
+                    priority = input("Priority (High/Medium/Low) [Medium]: ").strip().capitalize() or "Medium"
+                    tracker.add_task(title, priority)
+                    print("Task added!")
+                else:
+                    print("Task description cannot be empty.")
             elif sub_choice == "3":
-                idx = int(input("Enter task number to complete: ")) - 1
+                if not tracker.tasks:
+                    print("No tasks to complete.")
+                    continue
+                idx = get_valid_int("Enter task number to complete: ") - 1
                 if tracker.complete_task(idx):
                     print("Task marked as completed!")
+                else:
+                    print("Invalid task number.")
+            elif sub_choice == "4":
+                if not tracker.tasks:
+                    print("No tasks to delete.")
+                    continue
+                idx = get_valid_int("Enter task number to delete: ") - 1
+                if tracker.delete_task(idx):
+                    print("Task deleted!")
                 else:
                     print("Invalid task number.")
 
@@ -91,10 +131,13 @@ def main():
             sub_choice = input("Choose an option: ").strip()
 
             if sub_choice == "1":
-                subject = input("Enter subject name: ")
-                minutes = int(input("Enter time spent (in minutes): "))
-                tracker.log_study_session(subject, minutes)
-                print("Session logged!")
+                subject = input("Enter subject name: ").strip()
+                if subject:
+                    minutes = get_valid_int("Enter time spent (in minutes): ")
+                    tracker.log_study_session(subject, minutes)
+                    print("Session logged!")
+                else:
+                    print("Subject name cannot be empty.")
             elif sub_choice == "2":
                 total_mins = tracker.get_total_study_minutes()
                 hours = total_mins // 60
