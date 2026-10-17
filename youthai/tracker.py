@@ -58,3 +58,18 @@ class YouthAITracker:
 
     def get_total_study_minutes(self) -> int:
         return sum(s.minutes for s in self.study_sessions)
+
+    # --- Delete Operations ---
+    def delete_goal(self, index: int) -> bool:
+        if 0 <= index < len(self.goals):
+            self.goals.pop(index)
+            self._save()
+            return True
+        return False
+
+    def delete_task(self, index: int) -> bool:
+        if 0 <= index < len(self.tasks):
+            self.tasks.pop(index)
+            self._save()
+            return True
+        return False
