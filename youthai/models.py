@@ -3,27 +3,27 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Any
 
 @dataclass
-class User_Profile:
+class UserProfile:
     name: str
     age: int
     career_goal: str
-    grade_or_major: str
+    major_or_grade: str
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "name": self.name,
             "age": self.age,
             "career_goal": self.career_goal,
-            "grade_or_major": self.grade_or_major
+            "major_or_grade": self.major_or_grade
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "User_Profile":
+    def from_dict(cls, data: Dict[str, Any]) -> "UserProfile":
         return cls(
             name = data["name"],
             age = data["age"],
             career_goal = data["career_goal"],
-            grade_or_major = data["grade_or_major"]
+            major_or_grade = data["major_or_grade"]
         )
 
 @dataclass
